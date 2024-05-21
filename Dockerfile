@@ -1,11 +1,11 @@
 FROM python:3
 
-WORKDIR /app
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /django_api
 
 COPY requirements.txt ./
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
-
-CMD [ "python", "manage.py","runserver","0.0.0.0:8000" ]
+COPY . /django_api

@@ -1,2 +1,8 @@
 docker build --tag django-api .
 docker run --publish 8000:8000 django-api
+
+docker compose build
+docker compose up
+
+##### To open command bash for migrate create superuser etc
+docker exec -it django_api_container /bin/bash
