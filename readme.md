@@ -23,3 +23,17 @@ python manage.py migrate
 
 8. Run the project
 python manage.py runserver
+
+=============== For docker ===================
+
+1. Clone the project from github 
+git clone git@github.com:bibek977/django-api.git
+
+2. Workdir
+cd django_api
+
+3. Docker build 
+docker compose build
+
+4. Docker run
+docker compose up
