@@ -1,11 +1,8 @@
 version: '3.8'
 services:
-
   redis:
     image: redis:latest
     container_name: redis_container
-    # ports:
-    #   - 6379:6379
 
   db:
     image: postgres
@@ -13,30 +10,32 @@ services:
       - ./data/db:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=postgres
-      - DB_NAME = postgres
-      - DB_USER = postgres
-      - DB_PASSWORD = postgres
-
+      - DB_NAME=postgres
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
     container_name: postgres_db
+    user: "0:0"  # Running as root user inside the container to avoid permission issues
 
-  app:
-    build: .
+  django_app:
+    build:
+      context: .
+      dockerfile: Dockerfile.django
     volumes:
       - .:/django_api
     ports:
-      - 8000:8000
+      - "8000:8000"
     image: app:django_api
     container_name: django_api_container
-    # command: python manage.py runserver 0.0.0.0:8000
     command: >
       sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     depends_on:
       - db
-    
+
   celery:
     restart: always
-    build: 
+    build:
       context: .
+      dockerfile: Dockerfile.django
     command: celery -A django_api worker --loglevel=DEBUG
     volumes:
       - .:/django_api
@@ -44,4 +43,17 @@ services:
     depends_on:
       - db
       - redis
-      - app 
+      - django_app
+
+  react_app:
+    build:
+      context: .
+      dockerfile: ./frontend/Dockerfile.react
+    volumes:
+      - ./frontend:/django_api/frontend
+    ports:
+      - "5173:5173"
+    container_name: react_container
+    command: npm run dev
+    depends_on:
+      - django_app

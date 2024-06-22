@@ -6,3 +6,14 @@ docker compose up
 
 ##### To open command bash for migrate create superuser etc
 docker exec -it django_api_container /bin/bash
+
+########### data/db error ############
+sudo chmod -R 755 data/db/
+
+====== see all container ==========
+docker ps -a
+
+===== delete container ==========
+docker rm -f container_name
+
+##### React app ###########
